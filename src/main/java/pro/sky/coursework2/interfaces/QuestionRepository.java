@@ -4,15 +4,11 @@ import pro.sky.coursework2.Question;
 
 import java.util.Collection;
 
-public interface QuestionService {
+public interface QuestionRepository {
 
     Question add(Question question);
-
-    Question add(String question, String answer);
 
     Question remove(Question question);
 
     Collection<Question> getAll();
-
-    Question getRandomQuestion();
 }
