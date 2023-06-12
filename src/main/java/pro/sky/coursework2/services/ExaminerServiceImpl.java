@@ -4,29 +4,26 @@ import org.springframework.stereotype.Service;
 import pro.sky.coursework2.exceptions.BadParamsException;
 import pro.sky.coursework2.interfaces.ExaminerService;
 import pro.sky.coursework2.Question;
+import pro.sky.coursework2.interfaces.QuestionService;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class ExaminerServiceImpl implements ExaminerService {
-    private final JavaQuestionService javaQuestionService;
-    private final MathQuestionService mathQuestionService;
-
+    private final Map<String, QuestionService> questionServicesMap= new HashMap<>();
+    private  final Random random = new Random();
     public ExaminerServiceImpl(JavaQuestionService javaQuestionService, MathQuestionService mathQuestionService) {
-        this.javaQuestionService = javaQuestionService;
-        this.mathQuestionService = mathQuestionService;
+        questionServicesMap.put("java", javaQuestionService);
+        questionServicesMap.put("math", mathQuestionService);
     }
 
     @Override
     public Collection<Question> getQuestions(int amount) {
-        int allJavaQuestionsAmount = javaQuestionService.getQuestionsAmount();
-        int allMathQuestionsAmount = mathQuestionService.getQuestionsAmount();
+        int allJavaQuestionsAmount = questionServicesMap.get("java").getQuestionsAmount();
+        int allMathQuestionsAmount = questionServicesMap.get("math").getQuestionsAmount();
         if (amount > allJavaQuestionsAmount + allMathQuestionsAmount) {
             throw new BadParamsException();
         }
-        Random random = new Random();
         int examJavaQuestionsAmount;
         int examMathQuestionsAmount;
         examJavaQuestionsAmount = random.nextInt(Math.min(amount, allJavaQuestionsAmount) + 1);
@@ -35,17 +32,13 @@ public class ExaminerServiceImpl implements ExaminerService {
             examJavaQuestionsAmount = amount - examMathQuestionsAmount;
 
         }
-        Collection<Question> examJavaQuestions = new HashSet<>();
-        while (examJavaQuestions.size() < examJavaQuestionsAmount) {
-            examJavaQuestions.add(javaQuestionService.getRandomQuestion());
-        }
-        Collection<Question> examMathQuestions = new HashSet<>();
-        while (examMathQuestions.size() < examMathQuestionsAmount) {
-            examMathQuestions.add(mathQuestionService.getRandomQuestion());
-        }
         Collection<Question> examQuestions = new HashSet<>();
-        examQuestions.addAll(examJavaQuestions);
-        examQuestions.addAll(examMathQuestions);
+        while (examQuestions.size() < examJavaQuestionsAmount) {
+            examQuestions.add(questionServicesMap.get("java").getRandomQuestion());
+        }
+        while (examQuestions.size() < examMathQuestionsAmount + examJavaQuestionsAmount) {
+            examQuestions.add(questionServicesMap.get("math").getRandomQuestion());
+        }
         return examQuestions;
     }
 }

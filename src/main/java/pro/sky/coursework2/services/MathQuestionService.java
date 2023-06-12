@@ -3,17 +3,25 @@ package pro.sky.coursework2.services;
 import org.springframework.stereotype.Service;
 import pro.sky.coursework2.Question;
 import pro.sky.coursework2.exceptions.BadParamsException;
-import pro.sky.coursework2.exceptions.NoContentException;
+//import pro.sky.coursework2.exceptions.NoContentException;
+import pro.sky.coursework2.interfaces.Operationable;
 import pro.sky.coursework2.interfaces.QuestionService;
 import pro.sky.coursework2.repository.MathQuestionRepository;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class MathQuestionService implements QuestionService {
     private final MathQuestionRepository mathQuestionRepository;
+    private final Random random = new Random();
+    private final String[] operationKeys = {"+", "-", "*", "/"};
+    private final Map<String, Operationable> operationsMap = new HashMap<>();
+    {
+        operationsMap.put("+", (x, y) -> x + y);
+        operationsMap.put("-", (x, y) -> x - y);
+        operationsMap.put("*", (x, y) -> x * y);
+        operationsMap.put("/", (x, y) -> x / y);
+    }
 
     public MathQuestionService(MathQuestionRepository mathQuestionRepository) {
         this.mathQuestionRepository = mathQuestionRepository;
@@ -42,15 +50,24 @@ public class MathQuestionService implements QuestionService {
         return mathQuestionRepository.getAll();
     }
 
-    @Override
+   /* @Override
     public Question getRandomQuestion() {
         List<Question> allQuestions = List.copyOf(mathQuestionRepository.getAll());
         if (allQuestions.isEmpty()) {
             throw new NoContentException();
         }
-        Random random = new Random();
         int randomIndex = random.nextInt(allQuestions.size());
         return allQuestions.get(randomIndex);
+    }*/
+
+    @Override
+    public Question getRandomQuestion() {
+        String operationKey = operationKeys[random.nextInt(operationKeys.length)];
+        Operationable operation = operationsMap.get(operationKey);
+        int firstRandomNumber = random.nextInt(100);
+        int secondRandomNumber = random.nextInt(100);
+        operation.calculate(firstRandomNumber, secondRandomNumber);
+        return new Question("сколько будет " + firstRandomNumber + " " + operationKey + " " + secondRandomNumber, " " + operation.calculate(firstRandomNumber, secondRandomNumber));
     }
 
     public int getQuestionsAmount() {
