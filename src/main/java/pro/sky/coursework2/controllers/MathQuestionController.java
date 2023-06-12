@@ -6,30 +6,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pro.sky.coursework2.exceptions.BadParamsException;
-import pro.sky.coursework2.interfaces.QuestionService;
 import pro.sky.coursework2.Question;
+import pro.sky.coursework2.interfaces.QuestionService;
 
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/exam/java")
-public class JavaQuestionController {
+@RequestMapping("/exam/math")
+public class MathQuestionController {
     private final QuestionService service;
 
-    public JavaQuestionController(@Qualifier("javaQuestionService") QuestionService Service) {
-        this.service = Service;
+    public MathQuestionController(@Qualifier("mathQuestionService") QuestionService service) {
+        this.service = service;
     }
 
     @GetMapping("/add")
     public Question addQuestion(@RequestParam(required = false) String question, String answer) {
         checkParametersForNull(question, answer);
-        return service.add(question.trim(), answer.trim());
+        return service.add(question, answer);
     }
 
     @GetMapping("/remove")
     public Question remove(@RequestParam(required = false) String question, String answer) {
         checkParametersForNull(question, answer);
-        return service.remove(new Question(question.trim(), answer.trim()));
+        return service.remove(new Question(question, answer));
     }
 
     @GetMapping

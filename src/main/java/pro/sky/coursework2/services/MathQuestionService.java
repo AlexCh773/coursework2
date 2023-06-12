@@ -1,26 +1,27 @@
 package pro.sky.coursework2.services;
 
 import org.springframework.stereotype.Service;
+import pro.sky.coursework2.Question;
 import pro.sky.coursework2.exceptions.BadParamsException;
 import pro.sky.coursework2.exceptions.NoContentException;
-import pro.sky.coursework2.Question;
 import pro.sky.coursework2.interfaces.QuestionService;
-import pro.sky.coursework2.repository.JavaQuestionRepository;
+import pro.sky.coursework2.repository.MathQuestionRepository;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
 
 @Service
-public class JavaQuestionService implements QuestionService {
+public class MathQuestionService implements QuestionService {
+    private final MathQuestionRepository mathQuestionRepository;
 
-    private final JavaQuestionRepository javaQuestionRepository;
-
-    public JavaQuestionService(JavaQuestionRepository javaQuestionRepository) {
-        this.javaQuestionRepository = javaQuestionRepository;
+    public MathQuestionService(MathQuestionRepository mathQuestionRepository) {
+        this.mathQuestionRepository = mathQuestionRepository;
     }
 
     @Override
     public Question add(Question question) {
-        return javaQuestionRepository.add(question);
+        return mathQuestionRepository.add(question);
     }
 
     @Override
@@ -33,17 +34,17 @@ public class JavaQuestionService implements QuestionService {
 
     @Override
     public Question remove(Question question) {
-        return javaQuestionRepository.remove(question);
+        return mathQuestionRepository.remove(question);
     }
 
     @Override
     public Collection<Question> getAll() {
-        return javaQuestionRepository.getAll();
+        return mathQuestionRepository.getAll();
     }
 
     @Override
     public Question getRandomQuestion() {
-        List<Question> allQuestions = List.copyOf(javaQuestionRepository.getAll());
+        List<Question> allQuestions = List.copyOf(mathQuestionRepository.getAll());
         if (allQuestions.isEmpty()) {
             throw new NoContentException();
         }
@@ -53,6 +54,6 @@ public class JavaQuestionService implements QuestionService {
     }
 
     public int getQuestionsAmount() {
-        return javaQuestionRepository.getAll().size();
+        return mathQuestionRepository.getAll().size();
     }
 }
