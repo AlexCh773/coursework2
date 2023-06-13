@@ -13,6 +13,7 @@ import java.util.*;
 public class JavaQuestionService implements QuestionService {
 
     private final JavaQuestionRepository javaQuestionRepository;
+    private final Random random = new Random();
 
     public JavaQuestionService(JavaQuestionRepository javaQuestionRepository) {
         this.javaQuestionRepository = javaQuestionRepository;
@@ -47,7 +48,6 @@ public class JavaQuestionService implements QuestionService {
         if (allQuestions.isEmpty()) {
             throw new NoContentException();
         }
-        Random random = new Random();
         int randomIndex = random.nextInt(allQuestions.size());
         return allQuestions.get(randomIndex);
     }

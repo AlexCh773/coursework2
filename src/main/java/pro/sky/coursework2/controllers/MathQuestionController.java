@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pro.sky.coursework2.exceptions.BadParamsException;
 import pro.sky.coursework2.Question;
+import pro.sky.coursework2.exceptions.MethodNotAllowed;
 import pro.sky.coursework2.interfaces.QuestionService;
 
 import java.util.Collection;
@@ -22,20 +23,24 @@ public class MathQuestionController {
 
     @GetMapping("/add")
     public Question addQuestion(@RequestParam(required = false) String question, String answer) {
-        checkParametersForNull(question, answer);
-        return service.add(question, answer);
+        throw new MethodNotAllowed();
+//        checkParametersForNull(question, answer);
+//        return service.add(question, answer);
     }
 
     @GetMapping("/remove")
     public Question remove(@RequestParam(required = false) String question, String answer) {
-        checkParametersForNull(question, answer);
-        return service.remove(new Question(question, answer));
+        throw new MethodNotAllowed();
+//        checkParametersForNull(question, answer);
+//        return service.remove(new Question(question, answer));
     }
 
     @GetMapping
     public Collection<Question> getQuestions() {
-        return service.getAll();
+        throw new MethodNotAllowed();
+//        return service.getAll();
     }
+
     private void checkParametersForNull(Object... params) {
         for (Object param : params) {
             if (param == null) {
